@@ -15,6 +15,11 @@ try to make a change by yourself:
 import time
 import random as rand
 
+#ask user if the device needs calibrated
+calibration = input("Does the device require calibration:")
+# the rest of this calibration secton needs fleshed out
+
+
 sleep_time = input("How often (sec) should the device check to see if the HVAC system is ON for the next 24 hours?:")
 if len(sleep_time) == 0:
     print("No time entered, duration defaulted to 5s")

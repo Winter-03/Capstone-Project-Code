@@ -1,0 +1,6 @@
+"""
+This capstone repository will be used to create the example code and the actual code for the project
+If you are wanting to add or change the current code in the main branch then create a new branch and do it there
+This will make sure that code doesn't overlap and stop other bad stuff like that
+You'll need to make a pull/push request to do that
+"""
