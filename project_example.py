@@ -18,6 +18,7 @@ import random as rand
 #ask user if the device needs calibrated
 calibration = input("Does the device require calibration:")
 # the rest of this calibration secton needs fleshed out
+#pull a random value to simulate calibration
 
 
 sleep_time = input("How often (sec) should the device check to see if the HVAC system is ON for the next 24 hours?:")
