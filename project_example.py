@@ -16,10 +16,13 @@ import time
 import random as rand
 
 #ask user if the device needs calibrated
-calibration = input("Does the device require calibration:")
-# the rest of this calibration secton needs fleshed out
-#pull a random value to simulate calibration
-#
+calibration = input("Does the device require calibration(Y/N):")
+if len(calibration) == 1 and calibration.upper() == "Y":
+    device_calibrate = 85+rand.randint(1,15)
+    print("The device has found that the current filter is allowing %s cm^3/s" % device_calibrate)
+else:
+    devce_calibrate = 85
+    print("The device has auto set the nominal air flow rate to %s cm^3/s" % device_calibrate)
 
 
 sleep_time = input("How often (sec) should the device check to see if the HVAC system is ON for the next 24 hours?:")
@@ -75,7 +78,7 @@ while higher_watch < 1:
         print("The device will now spend the next 30s collecting flow data...")
         if initial_collection == 0:
             for i in range(30):
-                flow_rate_collection.append(70+rand.randint(1, 20))
+                flow_rate_collection.append(device_calibrate-rand.randint(1, 5))
                 time.sleep(1)
         else:
             for i in range(30):
