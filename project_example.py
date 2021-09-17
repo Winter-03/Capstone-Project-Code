@@ -48,7 +48,7 @@ life_percentage = 100
 #some choices like the chance for the HVAC system to be on a true to real life
 
 
-while days_run != 10 and battery_life > 5 and life_percentage > 10:
+while days_run <= 10 and battery_life > 5 and life_percentage > 10:
     watch = 0
     print("Day [%s]" % days_run)
     print("Batter Life Remaining [%s]" % battery_life)
