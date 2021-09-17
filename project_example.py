@@ -15,8 +15,8 @@ try to make a change by yourself:
 import time
 import random as rand
 
-print("This code is used to emulate our project\nIt will take a periodic data samples every day* for 5 days")
-print("For testing and time purposes 1 day is 5 minutes in this code")
+print("This code is used to emulate our project\nIt will take a periodic data samples every day* for 10 days")
+print("For testing and time purposes 1 day is 3 minutes in this code")
 print("-------------------------------------------------------------------------")
 
 #ask user if the device needs calibrated
@@ -35,7 +35,7 @@ if len(repeat_pressure_check) == 0:
     repeat_pressure_check = 10
 else:
     repeat_pressure_check = int(repeat_pressure_check)
-day_duration = 300
+day_duration = 180
 sleep_time = day_duration/repeat_pressure_check
 print("The HVAC system will be checked [%s] times a day or every [%s] seconds for this example code" % (repeat_pressure_check, sleep_time))
 print("-------------------------------------------------------------------------")
@@ -48,7 +48,7 @@ life_percentage = 100
 #some choices like the chance for the HVAC system to be on a true to real life
 
 
-while days_run != 5 and battery_life > 5 and life_percentage > 10:
+while days_run != 10 and battery_life > 5 and life_percentage > 10:
     watch = 0
     print("Day [%s]" % days_run)
     print("Batter Life Remaining [%s]" % battery_life)
