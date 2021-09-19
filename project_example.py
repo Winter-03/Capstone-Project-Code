@@ -15,8 +15,8 @@ try to make a change by yourself:
 import time
 import random as rand
 
-print("This code is used to emulate our project\nIt will take a periodic data samples every day* for 5 days")
-print("For testing and time purposes 1 day is 5 minutes in this code")
+print("This code is used to emulate our project\nIt will take a periodic data samples every day* for 10 days")
+print("For testing and time purposes 1 day is 3 minutes in this code")
 print("-------------------------------------------------------------------------")
 
 #ask user if the device needs calibrated
@@ -35,7 +35,7 @@ if len(repeat_pressure_check) == 0:
     repeat_pressure_check = 10
 else:
     repeat_pressure_check = int(repeat_pressure_check)
-day_duration = 300
+day_duration = 180
 sleep_time = day_duration/repeat_pressure_check
 print("The HVAC system will be checked [%s] times a day or every [%s] seconds for this example code" % (repeat_pressure_check, sleep_time))
 print("-------------------------------------------------------------------------")
@@ -48,7 +48,7 @@ life_percentage = 100
 #some choices like the chance for the HVAC system to be on a true to real life
 
 
-while days_run != 5 and battery_life > 5 and life_percentage > 10:
+while days_run <= 10 and battery_life > 5 and life_percentage > 10:
     watch = 0
     print("Day [%s]" % days_run)
     print("Batter Life Remaining [%s]" % battery_life)
@@ -121,11 +121,11 @@ while days_run != 5 and battery_life > 5 and life_percentage > 10:
         time.sleep(day_time_remaining)
 
 if days_run == 5:
-    print("This code ran for 5 days and has now stopped\nThank you for using it")
+    print("This code ran for 10 days and has now stopped\nThank you for using it")
 elif battery_life <= 5:
-    print("The amount of samples per day drained the battery and ended the 5 day test early")
+    print("The amount of samples per day drained the battery and ended the 10 day test early")
 else:
-    print("The air filter was clogged before the end of the 5 test days so the the test has ended early")
+    print("The air filter was clogged before the end of the 10 test days so the the test has ended early")
 #creating a report for the user to view the data
 
 print("A report will be made of the afl %\nLoading Report...")
