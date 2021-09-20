@@ -14,6 +14,9 @@ try to make a change by yourself:
 #This periodic data grab will be coded below to grab a pressure reading:
 import time
 import random as rand
+import requests
+from bs4 import BeautifulSoup
+
 
 print("This code is used to emulate our project\nIt will take a periodic data samples every day* for 10 days")
 print("For testing and time purposes 1 day is 3 minutes in this code")
@@ -50,9 +53,20 @@ life_percentage = 100
 
 while days_run <= 10 and battery_life > 5 and life_percentage > 10:
     watch = 0
+    #grabbing aqi data for day
+    URL = "https://aqicn.org/city/usa/kansas/peck/"
+    page = requests.get(URL)
+    soup = BeautifulSoup(page.content, "html.parser")
+    results = soup.find("div", class_="aqivalue")
+    results = str(results)
+    aqi_start=results.find(">")+1
+    aqi_end=len(results)-6
+    aqi = results[aqi_start:aqi_end]
+    
     print("Day [%s]" % days_run)
     print("Batter Life Remaining [%s]" % battery_life)
     print("Filter Life Remaining [%s]" % life_percentage)
+    print("The aqi for today is [%s]" % aqi)
     #below is the inner loop to check if the HVAC is on and record data
     while watch <= repeat_pressure_check:
         chance_for_HVAC_on = rand.randint(1, 100)
