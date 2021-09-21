@@ -15,8 +15,9 @@ try to make a change by yourself:
 import time
 import random as rand
 import requests
+#python -m pip install requests
 from bs4 import BeautifulSoup
-
+#python -m pip install beautifulsoup4
 
 print("This code is used to emulate our project\nIt will take a periodic data samples every day* for 10 days")
 print("For testing and time purposes 1 day is 3 minutes in this code")
