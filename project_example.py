@@ -14,9 +14,13 @@ try to make a change by yourself:
 #This periodic data grab will be coded below to grab a pressure reading:
 import time
 import random as rand
+import requests
+#python -m pip install requests
+from bs4 import BeautifulSoup
+#python -m pip install beautifulsoup4
 
 print("This code is used to emulate our project\nIt will take a periodic data samples every day* for 10 days")
-print("For testing and time purposes 1 day is 3 minutes in this code")
+print("For testing and time purposes 1 day is 1 minute in this code")
 print("-------------------------------------------------------------------------")
 
 #ask user if the device needs calibrated
@@ -35,24 +39,46 @@ if len(repeat_pressure_check) == 0:
     repeat_pressure_check = 10
 else:
     repeat_pressure_check = int(repeat_pressure_check)
-day_duration = 180
+day_duration = 60
 sleep_time = day_duration/repeat_pressure_check
 print("The HVAC system will be checked [%s] times a day or every [%s] seconds for this example code" % (repeat_pressure_check, sleep_time))
 print("-------------------------------------------------------------------------")
 initial_collection = 0
-afl = []
+afl_report = []
 days_run = 1
 battery_life = 100
 life_percentage = 100
+
+# #defining the function to find average flow rate
+def flow_avg(frc):
+    return sum(frc) / len(frc)
+
+#grabbing aqi data for day
+def web_grab_aqi(url):
+    global aqi
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, "html.parser")
+    results = soup.find("div", class_="aqivalue")
+    results = str(results)
+    aqi_start = results.find(">") + 1
+    aqi_end = len(results) - 6
+    aqi = results[aqi_start:aqi_end]
+    aqi = int(aqi)
+web_grab_aqi("https://aqicn.org/city/usa/kansas/peck/")
+
 #the code below creates the loop for the device to check at daily interval periods
 #some choices like the chance for the HVAC system to be on a true to real life
-
-
 while days_run <= 10 and battery_life > 5 and life_percentage > 10:
     watch = 0
+
     print("Day [%s]" % days_run)
+    afl_report.append("Day [%s]" % days_run)
     print("Batter Life Remaining [%s]" % battery_life)
+    afl_report.append("Batter Life Remaining [%s]" % battery_life)
     print("Filter Life Remaining [%s]" % life_percentage)
+    afl_report.append("Filter Life Remaining [%s]" % life_percentage)
+    print("The aqi for today is [%s]" % aqi)
+    afl_report.append("AQI [%s]" % aqi)
     #below is the inner loop to check if the HVAC is on and record data
     while watch <= repeat_pressure_check:
         chance_for_HVAC_on = rand.randint(1, 100)
@@ -84,33 +110,35 @@ while days_run <= 10 and battery_life > 5 and life_percentage > 10:
         print("Current Air Filter Life (AFL) will now be determined")
     #the assumption for this section of code is that the flow through a perfect filter is the calibrated amount
         flow_rate_collection = []
-        print("The device will now spend the next 30s collecting flow data...")
+        print("The device will now spend the next 15s collecting flow data...")
         if initial_collection == 0:
-            for i in range(30):
+            for i in range(15):
                 flow_rate_collection.append(device_calibrate_pres_on-rand.randint(1, 5))
                 time.sleep(1)
         else:
-            for i in range(30):
+            for i in range(15):
                 flow_rate_collection.append(result-rand.randint(1, 10))
                 time.sleep(1)
+        if rand.randint(1,2) == 1:
+            aqi = aqi + rand.randint(1, 20)
+        else:
+            aqi = aqi - rand.randint(1, 20)
         initial_collection += 1
         print("Flow data collected")
 
-        #defining the function to find average flow rate
-
-        def flow_avg(frc):
-            return sum(frc)/len(frc)
         result = round(flow_avg(flow_rate_collection), 3)
-        afl.append(str(result)+"%")
+        afl_report.append("Flow Rate [" + str(result)+"]cm^3/s")
         life_percentage = round((result/device_calibrate_pres_on)*100,2)
-        #printing results for the user
 
+        #printing results for the user
         print("The average flow for the system was found to be [%s]cm^3/s" % result)
         per = "%"
         day_time_remaining = (day_duration-(watch*sleep_time))
         day_time_remaining = round(day_time_remaining, 3)
         print("The HVAC system is running at [%s%s]" % (life_percentage, per))
+        afl_report.append("HVAC running at [%s%s]" % (life_percentage, per))
         print("-------------------------------------------------------------------------")
+        afl_report.append("-------------------------------------------------------------------------")
         print("The device will now stop this process for the day")
         print("-------------------------------------------------------------------------")
 
@@ -120,7 +148,7 @@ while days_run <= 10 and battery_life > 5 and life_percentage > 10:
         battery_life = battery_life - 0.5*watch
         time.sleep(day_time_remaining)
 
-if days_run == 5:
+if days_run == 11:
     print("This code ran for 10 days and has now stopped\nThank you for using it")
 elif battery_life <= 5:
     print("The amount of samples per day drained the battery and ended the 10 day test early")
@@ -128,7 +156,7 @@ else:
     print("The air filter was clogged before the end of the 10 test days so the the test has ended early")
 #creating a report for the user to view the data
 
-print("A report will be made of the afl %\nLoading Report...")
+print("A report will be made of the 10 day period \nLoading Report...")
 time.sleep(3)
-for i in afl:
+for i in afl_report:
     print(i)
