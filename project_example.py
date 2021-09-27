@@ -9,19 +9,35 @@ try to make a change by yourself:
     https://github.com/MoistH2O/Capstone-Project-Code/pulls
 """
 
+
 #Unless the board is wired to the HVAC system it will need to grab data periodically
 #to see when it needs to start tracking air filter life.
 #This periodic data grab will be coded below to grab a pressure reading:
 import time
+#this library already comes with python
 import random as rand
+#this library already comes with python
 import requests
 #python -m pip install requests
 from bs4 import BeautifulSoup
 #python -m pip install beautifulsoup4
+import smtplib
+#this library already comes with python, it defines a SMTP client object, used to interact with mail servers
+import ssl
+#this library already comes with python, it creates a secure connection between the client and the server
+from datetime import date
+#this library already comes with python
+
 
 print("This code is used to emulate our project\nIt will take a periodic data samples every day* for 10 days")
 print("For testing and time purposes 1 day is 1 minute in this code")
 print("-------------------------------------------------------------------------")
+
+
+#setting up ssl and smtp
+port = 465
+smtp_server = "smtp.gmail.com"
+
 
 #ask user if the device needs calibrated
 calibration = input("Does the device require calibration(Y/N):")
@@ -40,8 +56,9 @@ if len(repeat_pressure_check) == 0:
 else:
     repeat_pressure_check = int(repeat_pressure_check)
 day_duration = 60
-sleep_time = day_duration/repeat_pressure_check
-print("The HVAC system will be checked [%s] times a day or every [%s] seconds for this example code" % (repeat_pressure_check, sleep_time))
+sleep_time = round(day_duration/repeat_pressure_check,3)
+print("The HVAC system will be checked [%s] times a day or every [%s] seconds for this example code" %
+      (repeat_pressure_check, sleep_time))
 print("-------------------------------------------------------------------------")
 initial_collection = 0
 afl_report = []
@@ -70,7 +87,6 @@ web_grab_aqi("https://aqicn.org/city/usa/kansas/peck/")
 #some choices like the chance for the HVAC system to be on a true to real life
 while days_run <= 10 and battery_life > 5 and life_percentage > 10:
     watch = 0
-
     print("Day [%s]" % days_run)
     afl_report.append("Day [%s]" % days_run)
     print("Batter Life Remaining [%s]" % battery_life)
@@ -154,9 +170,37 @@ elif battery_life <= 5:
     print("The amount of samples per day drained the battery and ended the 10 day test early")
 else:
     print("The air filter was clogged before the end of the 10 test days so the the test has ended early")
-#creating a report for the user to view the data
 
+
+#creating a report for the user to view the data
 print("A report will be made of the 10 day period \nLoading Report...")
 time.sleep(3)
 for i in afl_report:
     print(i)
+
+#asking the user if an email would like to be sent?
+send_email_question = input("\n\n\nWould you like the results emailed to you?: ")
+if len(send_email_question) == 1 and send_email_question.upper() == "Y":
+    sender_email = input("Enter the device email: ")
+    print("Entered Email: [%s]" % sender_email)
+    receiver_email = input("Enter the recipients email: ")
+    print("Entered Email: [%s]" % receiver_email)
+    password = input("Enter the password for [%s]: " % sender_email)
+    print("Entered pass: [%s]" % password)
+    context = ssl.create_default_context()
+    try:
+        today = date.today()
+        human_day = today.strftime("%m/%d/%y")
+        afl_report = str(afl_report)
+        message = ("Subject: Test Email from AFL Device [%s]\n\n" % human_day)+afl_report
+        with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, message)
+    except:
+        print("ERROR: An error occurred while trying to send an email\nto [%s]\nfrom [%s]\npass [%s]"
+              % (receiver_email, sender_email, password))
+    else:
+        print("Email Sent to [%s]" % receiver_email)
+else:
+    print("Test Results Were not Emailed")
+
